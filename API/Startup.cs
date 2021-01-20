@@ -40,7 +40,9 @@ namespace API
 
             #region Repositories
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             #endregion
+        
 
         }
 
