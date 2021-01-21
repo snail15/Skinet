@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.DTOs;
+using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Specifications;
@@ -17,14 +19,17 @@ namespace API.Controllers
         private readonly IGenericRepository<Product> _productRepo;
         private readonly IGenericRepository<ProductBrand> _productBrandRepo;
         private readonly IGenericRepository<ProductType> _productTypeRepo;
+        private IMapper _mapper;
 
         public ProductsController(IGenericRepository<Product> productRepo,
                                 IGenericRepository<ProductBrand> productBrandRepo,
-                                IGenericRepository<ProductType> productTypeRepo)
+                                IGenericRepository<ProductType> productTypeRepo,
+                                IMapper mapper)
         {
             _productTypeRepo = productTypeRepo;
             _productBrandRepo = productBrandRepo;
             _productRepo = productRepo;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -32,15 +37,16 @@ namespace API.Controllers
         {
             var spec = new ProductsWithTypesAndBrandsSpecification();
             var products = await _productRepo.ListAsync(spec);
-            return Ok(products);
+            return Ok(_mapper.Map<List<Product>, List<ProductReturnDTO>>(products));
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
+        public async Task<ActionResult<ProductReturnDTO>> GetProduct(int id)
         {
             var spec = new ProductsWithTypesAndBrandsSpecification(id);
             var product = await _productRepo.GetEntityWithSpec(spec);
-            return Ok(product);
+
+            return Ok(_mapper.Map<Product, ProductReturnDTO>(product));
         }
 
         [HttpGet("brands")]
