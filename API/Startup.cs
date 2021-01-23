@@ -1,3 +1,6 @@
+using System.Linq;
+using API.Errors;
+using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using AutoMapper;
@@ -32,34 +35,25 @@ namespace API
         {
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-            });
         
             #region DbContext
             services.AddDbContext<StoreContext>(x => x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));    
             #endregion
 
-            #region Repositories
-            services.AddScoped<IProductRepository, ProductRepository>();
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            #endregion
-
             services.AddAutoMapper(typeof(MappingProfiles));
-        
+
+            services.AddApplicationServices();
+
+            services.AddSwaggerDocumentation();
+
+          
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // if (env.IsDevelopment())
-            // {
-            //     app.UseDeveloperExceptionPage();
-            //     app.UseSwagger();
-            //     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
-            // }
+          
             app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseStatusCodePagesWithReExecute("/errors/{0}");
@@ -71,6 +65,8 @@ namespace API
             app.UseStaticFiles();
 
             app.UseAuthorization();
+
+            app.UseSwaggerDocumentation();
 
             app.UseEndpoints(endpoints =>
             {
