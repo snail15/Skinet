@@ -4,7 +4,7 @@
     <a href="#">
       <h6 class="text-uppercase">{{product.name}}</h6>
     </a>
-    <span class="mb-2">{{product.price}}</span>
+    <span class="mb-2">{{product.price | currency: 'USD'}}</span>
 
     <div class="btn-group mt-auto">
       <button type="button" class="btn btn-sm btn-outline-secondary fa fa-shopping-cart mr-2"></button>
