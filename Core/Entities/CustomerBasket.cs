@@ -8,12 +8,17 @@ namespace Core.Entities
         {
         }
 
-        public CustomerBasket(int id, List<BasketItem> items)
+        public CustomerBasket(string id)
         {
             Id = id;
         }
 
-        public int Id { get; set; }
+        public CustomerBasket(string id, List<BasketItem> items)
+        {
+            Id = id;
+        }
+
+        public string Id { get; set; }
         public List<BasketItem> Items { get; set; } = new List<BasketItem>();
     }
 }
