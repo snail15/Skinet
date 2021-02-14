@@ -6,6 +6,7 @@ using API.Middleware;
 using AutoMapper;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +41,10 @@ namespace API
             #region DbContext
             services.AddDbContext<StoreContext>(x => x.UseSqlServer(_config.GetConnectionString("DefaultConnection")));    
             #endregion
+            
+            services.AddDbContext<AppIdentityDbContext>(x => {
+                x.UseSqlServer(_config.GetConnectionString("IdentityConnection"));
+            });
 
             services.AddSingleton<IConnectionMultiplexer>(c => {
                 var configuration = ConfigurationOptions.Parse(_config.GetConnectionString("Redis"), true);
@@ -49,6 +54,8 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfiles));
 
             services.AddApplicationServices();
+
+            services.AddIdentityServices();
 
             services.AddSwaggerDocumentation();
             
