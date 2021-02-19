@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
@@ -37,6 +38,34 @@ namespace API.Controllers
             return Ok(order);
 
         }
+
+        [HttpGet]
+        public async Task<ActionResult<List<OrderDTO>>> GetOrdersForUser()
+        {
+            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+
+            var orders = await _orderService.GetOrdersForUserAsync(email);
+
+            return Ok(_mapper.Map<List<Order>, List<OrderToReturnDTO>>(orders));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<OrderToReturnDTO>> GetOrderByIdForUser(int id)
+        {
+            var email = HttpContext.User.RetrieveEmailFromPrincipal();
+
+            var order = await _orderService.GetOrderByIdAsync(id, email);
+
+            if (order == null) return NotFound(new APIResponse(404));
+
+            return Ok(_mapper.Map<Order, OrderToReturnDTO>(order));
+        }
+
+        [HttpGet("deliveryMethods")]
+        public async Task<ActionResult<List<DeliveryMethod>>> GetDeliveryMethods()
+        {
+            return Ok(await _orderService.GetDeliveryMethodsAsync());
+        } 
 
     }
 }
