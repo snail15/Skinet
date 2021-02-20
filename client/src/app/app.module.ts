@@ -1,3 +1,4 @@
+import { JwtInterceptor } from './core/interceptors/jwt.iterceptor';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
 import { CoreModule } from './core/core.module';
 import { NgModule } from '@angular/core';
@@ -27,6 +28,7 @@ import { LoadingInterceptor } from './core/interceptors/loading.interceptor';
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true},
+    {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]
 })
