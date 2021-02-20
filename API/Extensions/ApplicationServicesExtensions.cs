@@ -23,6 +23,7 @@ namespace API.Extensions
             #region Services
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             #endregion
 
             services.Configure<ApiBehaviorOptions>(options => 
